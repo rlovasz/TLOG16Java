@@ -13,6 +13,7 @@ import java.util.*;
  * @author precognox
  */
 public class WorkDay {
+    private static final int DEFAULT_REQUIRED_MIN_PER_DAY=450;
     private List<Task> tasks;
     private long requiredMinPerDay;
     private LocalDate actualDay;
@@ -31,11 +32,11 @@ public class WorkDay {
     }
     
     public WorkDay(LocalDate actualDay) {
-        this(450,actualDay);
+        this(DEFAULT_REQUIRED_MIN_PER_DAY,actualDay);
     }
 
     public WorkDay() {
-        this(450,LocalDate.now());
+        this(DEFAULT_REQUIRED_MIN_PER_DAY,LocalDate.now());
     }
     
     public void setRequiredMinPerDay(long requiredMinPerDay) {
