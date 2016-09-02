@@ -6,6 +6,7 @@
 package timelogger;
 
 import java.time.*;
+import java.lang.*;
 
 /**
  *
@@ -16,7 +17,7 @@ public class Task {
     private LocalTime startTime;
     private LocalTime endTime;
     private String comment;
-    private long minPerTask= Duration.between(startTime, endTime).toMinutes();
+    private long minPerTask;
 
     public Task(String taskId,String comment, LocalTime startTime, LocalTime endTime) {
         this.taskId = taskId;
@@ -25,22 +26,6 @@ public class Task {
         this.comment = comment;
     }
     
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(LocalTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
     public String getTaskId() {
         return taskId;
     }
@@ -58,7 +43,22 @@ public class Task {
     }
 
     public long getMinPerTask() {
-        return minPerTask;
+        return Duration.between(startTime, endTime).toMinutes();
+    }
+    
+    public boolean isValidTaskID()
+    {
+        boolean valid;
+    if(taskId.length()==4)
+        {
+        valid=taskId.matches("\\d{4}");
+        }
+    else if(taskId.length()==7)
+        {
+        valid=taskId.matches("LT-\\d{4}");
+        }
+    else {valid=false;}
+        return valid;
     }
     
     

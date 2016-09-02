@@ -13,8 +13,9 @@ import java.util.*;
  * @author precognox
  */
 public class WorkDay {
+    private static final List<DayOfWeek> WEEKDAYS = new ArrayList<>(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY));
     private static final int DEFAULT_REQUIRED_MIN_PER_DAY=450;
-    private List<Task> tasks;
+    private List<Task> tasks = new ArrayList<>();
     private long requiredMinPerDay;
     private LocalDate actualDay;
     private long extraMinPerDay;
@@ -38,34 +39,31 @@ public class WorkDay {
     public WorkDay() {
         this(DEFAULT_REQUIRED_MIN_PER_DAY,LocalDate.now());
     }
-    
-    public void setRequiredMinPerDay(long requiredMinPerDay) {
-        this.requiredMinPerDay = requiredMinPerDay;
-    }
-
-    public void setActualDay(LocalDate actualDay) {
-        this.actualDay = actualDay;
-    }
-
-    public List<Task> getTasks() {
-        return tasks;
-    }
 
     public long getRequiredMinPerDay() {
         return requiredMinPerDay;
     }
 
-    public LocalDate getActualDay() {
-        return actualDay;
-    }
-
     public long getExtraMinPerDay() {
-        return extraMinPerDay;
+        return getSumPerDay()-requiredMinPerDay;
     }
 
-    public long getSumPerDay() {
+    public long getSumPerDay() {   
+        sumPerDay=0;
+        for(Task t: tasks)
+        {
+        sumPerDay+=t.getMinPerTask();
+        }
         return sumPerDay;
     }
     
+    public void addTask(Task t)
+    {
+    tasks.add(t);
+    }
     
+    public boolean isWeekday()
+    {
+    return WEEKDAYS.contains(DayOfWeek.from(actualDay));
+    }
 }

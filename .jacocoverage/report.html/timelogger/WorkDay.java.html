@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="hu"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../.resources/report.css" type="text/css"/><link rel="shortcut icon" href="../.resources/report.gif" type="image/gif"/><title>WorkDay.java</title><link rel="stylesheet" href="../.resources/prettify.css" type="text/css"/><script type="text/javascript" src="../.resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../.sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">JaCoCoverage analysis of project &quot;TimeLogger&quot; (powered by JaCoCo from EclEmma)</a> &gt; <a href="index.source.html" class="el_package">timelogger</a> &gt; <span class="el_source">WorkDay.java</span></div><h1>WorkDay.java</h1><pre class="source lang-java linenums">/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package timelogger;
+
+import java.time.*;
+import java.util.*;
+
+/**
+ *
+ * @author precognox
+ */
+public class WorkDay {
+<span class="fc" id="L16">    private static final List&lt;DayOfWeek&gt; WEEKDAYS = new ArrayList&lt;&gt;(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY));</span>
+    private static final int DEFAULT_REQUIRED_MIN_PER_DAY=450;
+<span class="fc" id="L18">    private List&lt;Task&gt; tasks = new ArrayList&lt;&gt;();</span>
+    private long requiredMinPerDay;
+    private LocalDate actualDay;
+    private long extraMinPerDay;
+    private long sumPerDay;
+
+    
+
+<span class="fc" id="L26">    public WorkDay(long requiredMinPerDay, LocalDate actualDay) {</span>
+<span class="fc" id="L27">        this.requiredMinPerDay = requiredMinPerDay;</span>
+<span class="fc" id="L28">        this.actualDay = actualDay;</span>
+<span class="fc" id="L29">    }</span>
+
+    public WorkDay(long requiredMinPerDay) {
+<span class="fc" id="L32">        this(requiredMinPerDay, LocalDate.now());</span>
+<span class="fc" id="L33">    }</span>
+    
+    public WorkDay(LocalDate actualDay) {
+<span class="fc" id="L36">        this(DEFAULT_REQUIRED_MIN_PER_DAY,actualDay);</span>
+<span class="fc" id="L37">    }</span>
+
+    public WorkDay() {
+<span class="fc" id="L40">        this(DEFAULT_REQUIRED_MIN_PER_DAY,LocalDate.now());</span>
+<span class="fc" id="L41">    }</span>
+
+    public long getRequiredMinPerDay() {
+<span class="fc" id="L44">        return requiredMinPerDay;</span>
+    }
+
+    public long getExtraMinPerDay() {
+<span class="fc" id="L48">        return getSumPerDay()-requiredMinPerDay;</span>
+    }
+
+    public long getSumPerDay() {   
+<span class="fc" id="L52">        sumPerDay=0;</span>
+<span class="fc bfc" id="L53" title="All 2 branches covered.">        for(Task t: tasks)</span>
+        {
+<span class="fc" id="L55">        sumPerDay+=t.getMinPerTask();</span>
+<span class="fc" id="L56">        }</span>
+<span class="fc" id="L57">        return sumPerDay;</span>
+    }
+    
+    public void addTask(Task t)
+    {
+<span class="fc" id="L62">    tasks.add(t);</span>
+<span class="fc" id="L63">    }</span>
+    
+    public boolean isWeekday()
+    {
+<span class="fc" id="L67">    return WEEKDAYS.contains(DayOfWeek.from(actualDay));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.5.201505241946</span></div></body></html>
