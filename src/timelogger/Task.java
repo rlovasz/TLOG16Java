@@ -25,6 +25,25 @@ public class Task {
         this.endTime = endTime;
         this.comment = comment;
     }
+
+    public Task() {
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
     
     public String getTaskId() {
         return taskId;
@@ -46,19 +65,19 @@ public class Task {
         return Duration.between(startTime, endTime).toMinutes();
     }
     
+    public boolean isValidRedmineTaskId()
+    {
+    return taskId.matches("\\d{4}");
+    }
+    
+    public boolean isValidLTTaskId()
+    {
+    return taskId.matches("LT-\\d{4}");
+    }
+    
     public boolean isValidTaskID()
     {
-        boolean valid;
-    if(taskId.length()==4)
-        {
-        valid=taskId.matches("\\d{4}");
-        }
-    else if(taskId.length()==7)
-        {
-        valid=taskId.matches("LT-\\d{4}");
-        }
-    else {valid=false;}
-        return valid;
+        return isValidLTTaskId() || isValidRedmineTaskId();
     }
     
     

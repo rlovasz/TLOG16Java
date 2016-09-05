@@ -40,6 +40,22 @@ public class WorkDay {
         this(DEFAULT_REQUIRED_MIN_PER_DAY,LocalDate.now());
     }
 
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
+    }
+
+    public void setRequiredMinPerDay(long requiredMinPerDay) {
+        this.requiredMinPerDay = requiredMinPerDay;
+    }
+
+    public void setActualDay(LocalDate actualDay) {
+        this.actualDay = actualDay;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
     public long getRequiredMinPerDay() {
         return requiredMinPerDay;
     }

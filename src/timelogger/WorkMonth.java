@@ -17,6 +17,10 @@ public class WorkMonth {
     private long sumPerMonth;
     private long extraMinPerMonth;
 
+    public void setDays(List<WorkDay> days) {
+        this.days = days;
+    }
+    
     public List<WorkDay> getDays() {
         return days;
     }
@@ -43,9 +47,9 @@ public class WorkMonth {
         addWorkDay(wd, false);
     }
     
-    public void addWorkDay(WorkDay wd, boolean enableWeekend)
+    public void addWorkDay(WorkDay wd, boolean isWeekendEnabled)
     {
-        if(wd.isWeekday() || enableWeekend){
+        if(wd.isWeekday() || isWeekendEnabled){
             days.add(wd);
         }
     }
