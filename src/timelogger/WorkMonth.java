@@ -2,8 +2,6 @@ package timelogger;
 
 
 import java.util.*;
-import javax.swing.JOptionPane;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -40,13 +38,17 @@ public class WorkMonth {
         }
         return getSumPerMonth()-requiredMinPerMonth;
     }
-    public void addWorkDay(WorkDay wd)
+    
+    public void addWorkDay(WorkDay wd) {
+        addWorkDay(wd, false);
+    }
+    
+    public void addWorkDay(WorkDay wd, boolean enableWeekend)
     {
-        if(wd.isWeekday()){days.add(wd);}
-        else
-        {
-        int result = JOptionPane.showConfirmDialog(null, "Are you sure? Do you work on weekend?", "Warning message", JOptionPane.YES_NO_OPTION);
-        if(result == JOptionPane.YES_OPTION){days.add(wd);}
+        if(wd.isWeekday() || enableWeekend){
+            days.add(wd);
         }
     }
+    
+    
 }

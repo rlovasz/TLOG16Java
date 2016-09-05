@@ -28,6 +28,7 @@ public class WorkMonthTest {
     WorkDay wd2;
     WorkDay wd3;
     WorkDay wd4;
+    WorkDay wd5;
     
     WorkMonth wm1;
     @Before
@@ -36,6 +37,7 @@ public class WorkMonthTest {
         wd2 = new WorkDay();
         wd3 = new WorkDay(420,LocalDate.of(2016, Month.SEPTEMBER, 1));
         wd4 = new WorkDay(LocalDate.of(2016, Month.SEPTEMBER, 1));
+        wd5 = new WorkDay(LocalDate.of(2016, Month.AUGUST, 28));
         
         t1 = new Task("1856","This is a comment",LocalTime.of(7, 30), LocalTime.of(8, 45));
         t2 = new Task("1486","This is a comment",LocalTime.of(8, 45), LocalTime.of(9, 45));
@@ -83,9 +85,23 @@ public class WorkMonthTest {
      * Test of addWorkDay method, of class WorkMonth.
      */
     @Test
-    public void testAddWorkDay() {
+    public void testAddWorkDayWeekday() {
+        wd1.addTask(t1);
         wm1.addWorkDay(wd1);
         assertEquals(wd1.getSumPerDay(), wm1.getSumPerMonth());
+    }
+    
+    @Test
+    public void testAddWorkDayWeekendTrue() {
+        wd5.addTask(t1);
+        wm1.addWorkDay(wd5,true);
+        assertEquals(wd5.getSumPerDay(), wm1.getSumPerMonth());
+    }
+    
+    @Test
+    public void testAddWorkDayWeekendFalse() {
+        wm1.addWorkDay(wd5);
+        assertEquals(0, wm1.getSumPerMonth());
     }
     
 }
