@@ -1,6 +1,7 @@
-nbproject/private/
+nbproject/
 build/
 nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+.jacocoverage/
