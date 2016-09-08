@@ -17,8 +17,12 @@ public class TimeLogger {
 
     /**
      * @param args the command line arguments
+     * @throws timelogger.NotMultipleQuarterHourException
+     * @throws timelogger.NotExpectedTimeOrderException
+     * @throws timelogger.EmptyTimeFieldException
+     * @throws timelogger.WeekendIsNotEnabledException
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NotMultipleQuarterHourException, NotExpectedTimeOrderException, EmptyTimeFieldException, WeekendIsNotEnabledException, NoTaskIdException, NotSeparatedTaskTimesException, NotNewDateException {
         WorkDay wd = new WorkDay(LocalDate.of(2016, Month.AUGUST, 28));
         Task t = new Task("1485", "This is a comment", LocalTime.of(7, 30), LocalTime.of(8, 45));
         WorkMonth aug = new WorkMonth();

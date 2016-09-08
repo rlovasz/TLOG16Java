@@ -25,12 +25,34 @@ public class Task {
     @Setter
     private LocalTime endTime;
     @Setter
-    private String comment;
+    private String comment = "";
     private long minPerTask;
 
     /**
-     * This method is a constructor with 2 String and 2 LocalTime parameters.
-     *
+     * @return with the value of task Id, if it is set
+     * @throws NoTaskIdException , if task Id is not set
+     */
+    public String getTaskId() throws NoTaskIdException {
+        if (taskId == null) {
+            throw new NoTaskIdException("There is no task Id, please set a valid Id!");
+        } else {
+            return taskId;
+        }
+    }
+
+    /**
+     * @return with the value of comment, but if it is not set, 
+     * it returns with an empty String
+     */
+    public String getComment() {
+        if (comment == null) {
+            comment = "";
+        }
+
+        return comment;
+    }
+
+    /**
      * @param taskId This is the Id of the task. Redmine project: 4 digits, LT
      * project: LT-(4 digits)
      * @param comment In this parameter you can add some detail about what did
@@ -40,38 +62,59 @@ public class Task {
      * @param endTime You can set the time when you finished the task:
      * LocalTime.of(hh,mm)
      */
-    public Task(String taskId, String comment, LocalTime startTime, LocalTime endTime) {
+    public Task(String taskId, String comment, LocalTime startTime, LocalTime endTime){
         this.taskId = taskId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.comment = comment;
+
     }
 
     /**
      * This method is a getter for the minPerTask field.
      *
      * @return with the time interval between startTime and endTime in minutes
+     * @throws timelogger.NotExpectedTimeOrderException, if the task begins after it ends
+     * @throws timelogger.EmptyTimeFieldException, if any of the LocalTime  parameter is empty
      */
-    public long getMinPerTask() {
-        return Duration.between(startTime, endTime).toMinutes();
+    public long getMinPerTask() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+        if (startTime == null || endTime == null || (startTime == null && endTime == null)) {
+            throw new EmptyTimeFieldException("You leaved out a time argument, you should set it.");
+        } else if (startTime.isBefore(endTime)) {
+            return Duration.between(startTime, endTime).toMinutes();
+        } else {
+            throw new NotExpectedTimeOrderException("Something went wrong. You should begin"
+                    + " your task before you finish it.");
+        }
+
     }
 
     /**
      * This method checks if the Id of the task is a valid redmine task Id.
      *
      * @return true, if it is valid, false if it isn't valid.
+     * @throws timelogger.NoTaskIdException, if task Id is not set
      */
-    public boolean isValidRedmineTaskId() {
-        return taskId.matches("\\d{4}");
+    public boolean isValidRedmineTaskId() throws NoTaskIdException {
+        if (taskId == null) {
+            throw new NoTaskIdException("There is no task Id, please set a valid Id!");
+        } else {
+            return taskId.matches("\\d{4}");
+        }
     }
 
     /**
      * This method checks if the Id of the task is a valid LT task Id.
      *
      * @return true, if it is valid, false if it isn't valid.
+     * @throws timelogger.NoTaskIdException, if task Id is not set
      */
-    public boolean isValidLTTaskId() {
-        return taskId.matches("LT-\\d{4}");
+    public boolean isValidLTTaskId() throws NoTaskIdException {
+        if (taskId == null) {
+            throw new NoTaskIdException("There is no task Id, please set a valid Id!");
+        } else {
+            return taskId.matches("LT-\\d{4}");
+        }
     }
 
     /**
@@ -79,22 +122,23 @@ public class Task {
      * LT project task id).
      *
      * @return true, if it is valid, false if it isn't valid.
+     * @throws timelogger.NoTaskIdException, if task Id is not set
      */
-    public boolean isValidTaskID() {
+    public boolean isValidTaskID() throws NoTaskIdException {
+
         return isValidLTTaskId() || isValidRedmineTaskId();
     }
-    
+
     /**
      * This method checks if the minutes are the multiple of quarter hour
+     *
      * @return true, if it is multiple, but false if it isn't.
+     * @throws timelogger.NotExpectedTimeOrderException, , if the task begins after it ends
+     * @throws timelogger.EmptyTimeFieldException, if any of the LocalTime  parameter is empty
      */
-    public boolean isMultipleQuarterHour() {
-        if (getMinPerTask() % 15 == 0) {
-            return true;
-        } 
-        else {
-            return false;
-        }
+    public boolean isMultipleQuarterHour() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+        return getMinPerTask() % 15 == 0;
+
     }
 
 }
