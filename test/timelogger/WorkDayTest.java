@@ -1,8 +1,6 @@
 package timelogger;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -28,16 +26,16 @@ public class WorkDayTest {
     public void setUp() throws NoTaskIdException, InvalidTaskIdException, NegativeMinutesOfWorkException, FutureWorkException {
         wd1 = new WorkDay(420);
         wd2 = new WorkDay();
-        wd3 = new WorkDay(420, LocalDate.of(2016, Month.SEPTEMBER, 1));
-        wd4 = new WorkDay(LocalDate.of(2016, Month.SEPTEMBER, 1));
-        wd5 = new WorkDay(75, LocalDate.of(2016, Month.SEPTEMBER, 1));
+        wd3 = new WorkDay(420, 2016, 9, 1);
+        wd4 = new WorkDay(2016, 9, 1);
+        wd5 = new WorkDay(75, 2016, 9, 1);
         wd6 = new WorkDay(60);
-        wd7 = new WorkDay(LocalDate.of(2016, Month.AUGUST, 28));
-        t1 = new Task("1856", "This is a comment", LocalTime.of(7, 30), LocalTime.of(8, 45));
-        t2 = new Task("1486", "This is a comment", LocalTime.of(8, 45), LocalTime.of(9, 45));
-        t3 = new Task("1234", "", LocalTime.of(7, 10), LocalTime.of(8, 20));
-        t4 = new Task("1486", "This is a comment", LocalTime.of(8, 30), LocalTime.of(9, 45));
-        t5 = new Task("1486", "This is a comment", LocalTime.of(7, 30), LocalTime.of(8, 45));
+        wd7 = new WorkDay(2016, 8, 28);
+        t1 = new Task("1856", "This is a comment", 7, 30, 8, 45);
+        t2 = new Task("1486", "This is a comment", 8, 45, 9, 45);
+        t3 = new Task("1234", "", 7, 10, 8, 20);
+        t4 = new Task("1486", "This is a comment", 8, 30, 9, 45);
+        t5 = new Task("1486", "This is a comment", 7, 30, 8, 45);
     }
 
     @Test
@@ -83,12 +81,14 @@ public class WorkDayTest {
 
     @Test(expected = FutureWorkException.class)
     public void testSetActualDayFuture() throws FutureWorkException {
-        wd1.setActualDay(LocalDate.now().plusDays(1));
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        wd1.setActualDay(tomorrow.getYear(), tomorrow.getMonthValue(), tomorrow.getDayOfMonth());
     }
 
     @Test(expected = FutureWorkException.class)
-    public void testWorkDayFuture() throws NegativeMinutesOfWorkException, FutureWorkException{
-    WorkDay wd = new WorkDay(LocalDate.now().plusDays(1));
+    public void testWorkDayFuture() throws NegativeMinutesOfWorkException, FutureWorkException {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        WorkDay wd = new WorkDay(tomorrow.getYear(), tomorrow.getMonthValue(), tomorrow.getDayOfMonth());
     }
 
     @Test

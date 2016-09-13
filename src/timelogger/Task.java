@@ -32,14 +32,16 @@ public class Task {
      * project: LT-(4 digits)
      * @param comment In this parameter you can add some detail about what did
      * you do exactly.
-     * @param startTime You can set the time when you started the task:
-     * LocalTime.of(hh,mm)
-     * @param endTime You can set the time when you finished the task:
-     * LocalTime.of(hh,mm)
+     * @param startHour, the hour part of the beginning time
+     * @param startMin, the mint part of the beginning time
+     * @param endHour, the hour part of the finishing time
+     * @param endMin , the min part of the finishing time
      * @throws timelogger.InvalidTaskIdException, if the set task Id is not valid
      * @throws timelogger.NoTaskIdException, if there is no task Id set
      */
-    public Task(String taskId, String comment, LocalTime startTime, LocalTime endTime) throws InvalidTaskIdException, NoTaskIdException{
+    public Task(String taskId, String comment, int startHour, int startMin, int endHour, int endMin) throws InvalidTaskIdException, NoTaskIdException{
+        LocalTime startTime = LocalTime.of(startHour, startMin);
+        LocalTime endTime = LocalTime.of(endHour, endMin);
         
         this.taskId = taskId;
         this.startTime = startTime;
@@ -143,7 +145,7 @@ public class Task {
      * @return true, if it is valid, false if it isn't valid.
      * @throws timelogger.NoTaskIdException, if task Id is not set
      */
-    protected boolean isValidTaskID() throws NoTaskIdException {
+    public boolean isValidTaskID() throws NoTaskIdException {
 
         return isValidLTTaskId() || isValidRedmineTaskId();
     }

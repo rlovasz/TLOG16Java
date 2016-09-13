@@ -19,21 +19,24 @@ public class WorkMonthTest {
     WorkDay wd3;
     WorkDay wd4;
     WorkDay wd5;
-    
+    WorkDay wd6;
+    WorkMonth wm2;
     WorkMonth wm1;
     
     @Before
     public void setUp() throws NoTaskIdException, InvalidTaskIdException, NegativeMinutesOfWorkException, FutureWorkException {
-        wd1 = new WorkDay(420);
+        wd1 = new WorkDay(420, 2016, 9, 2);
         wd2 = new WorkDay();
-        wd3 = new WorkDay(420, LocalDate.of(2016, Month.SEPTEMBER, 1));
-        wd4 = new WorkDay(LocalDate.of(2016, Month.SEPTEMBER, 1));
-        wd5 = new WorkDay(LocalDate.of(2016, Month.AUGUST, 28));
+        wd3 = new WorkDay(420, 2016, 9, 1);
+        wd4 = new WorkDay(2016, 9, 1);
+        wd5 = new WorkDay(2016, 9, 10);
+        wd6 = new WorkDay(2016, 8, 30);
         
-        t1 = new Task("1856", "This is a comment", LocalTime.of(7, 30), LocalTime.of(8, 45));
-        t2 = new Task("1486", "This is a comment", LocalTime.of(8, 45), LocalTime.of(9, 45));
+        t1 = new Task("1856", "This is a comment", 7, 30, 8, 45);
+        t2 = new Task("1486", "This is a comment", 8, 45, 9, 45);
         
-        wm1 = new WorkMonth();
+        wm1 = new WorkMonth(2016 ,9);
+        wm2 = new WorkMonth(2016, 8);
     }
     
     @Test
@@ -124,7 +127,7 @@ public class WorkMonthTest {
     @Test(expected = NotTheSameMonthException.class)
     public void testAddWorkDaySameMonthFalse() throws WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotNewDateException, NotMultipleQuarterHourException, NotSeparatedTaskTimesException, NotTheSameMonthException {
         wm1.addWorkDay(wd4);
-        wm1.addWorkDay(wd5);
+        wm1.addWorkDay(wd6);
     }
     
     @Test
@@ -162,7 +165,7 @@ public class WorkMonthTest {
     public void testIsSameMonthFalse() throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
         boolean expResult = false;
         wm1.addWorkDay(wd1);
-        boolean result = wm1.isSameMonth(wd5);
+        boolean result = wm1.isSameMonth(wd6);
         assertEquals(expResult, result);
     }
     

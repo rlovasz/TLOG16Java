@@ -1,29 +1,39 @@
 package timelogger;
 
+import java.time.YearMonth;
 import java.util.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
  * With the instantiation of this class we can create work months. We can ask
- * for the days in this month and we can change it. We can ask for the sum of
- * the working minutes in this work month, and the extra minutes.
+ for the days in this date and we can change it. We can ask for the sum of
+ the working minutes in this work date, and the extra minutes.
  *
  * @author precognox
  */
-@NoArgsConstructor
 public class WorkMonth {
 
     @Setter
     @Getter
     private List<WorkDay> days = new ArrayList<>();
+    @Getter
+    private YearMonth date;
     private long sumPerMonth = 0;
     private long requiredMinPerMonth = 0;
 
     /**
-     * This method calculates all the minutes in this month while the employee
-     * worked
+     * 
+     * @param year This is the year of this date in YYYY format
+     * @param month This is the date's value with a simple integer
+     */
+    public WorkMonth(int year, int month) {
+        this.date = YearMonth.of(year, month);
+    }
+    
+    /**
+     * This method calculates all the minutes in this date while the employee
+ worked
      *
      * @return with a positive value of worked minutes
      * @throws timelogger.NotExpectedTimeOrderException, if one of the tasks
@@ -41,7 +51,7 @@ public class WorkMonth {
     }
 
     /**
-     * This method calculates all the extra worked minutes in this month
+     * This method calculates all the extra worked minutes in this date
      *
      * @return with the signed value of extra minutes. If it is positive the
      * employee worked more, if it is negative the employee worked less, then
@@ -58,7 +68,7 @@ public class WorkMonth {
 
     /**
      * This method calculates how many minutes should the employee work this
-     * month.
+ date.
      *
      * @return with the integer value of minutes.
      */
@@ -82,19 +92,19 @@ public class WorkMonth {
     }
 
     /**
-     * This method adds a work day to this month, if the work day is a weekday.
+     * This method adds a work day to this date, if the work day is a weekday.
      * But if it is on weekend we have to enable to work on weekend.
      *
      * @param workDay This is a WorkDay parameter, which will be added.
      * @param isWeekendEnabled This is a boolean parameter, if it is false, we
-     * cannot work on weekend, but if it is true, we can add a day of weekend to
-     * this month.
+ cannot work on weekend, but if it is true, we can add a day of weekend to
+ this date.
      * @throws timelogger.WeekendNotEnabledException if we try to add a
      * weekend and it is enabled
      * @throws timelogger.NotNewDateException,if the day is already exists, what
      * we are trying to add
      * @throws timelogger.NotTheSameMonthException, if we try to add a day from 
-     * an other month
+ an other date
      */
     public void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
         if (isNewDate(workDay) && (isWeekendEnabled || workDay.isWeekday()) && isSameMonth(workDay)) {
@@ -127,11 +137,11 @@ public class WorkMonth {
     }
 
     /**
-     * This method decides, if the parameter has the same month value, like the
-     * days
+     * This method decides, if the parameter has the same date value, like the
+ days
      *
      * @param workDay parameter about to decide
-     * @return true if it is the same month, false, if it is not
+     * @return true if it is the same date, false, if it is not
      */
     public boolean isSameMonth(WorkDay workDay) {
         for (WorkDay wd : days) {

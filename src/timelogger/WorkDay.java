@@ -32,12 +32,14 @@ public class WorkDay {
     /**
      * @param requiredMinPerDay In this parameter you can set the minutes you
      * should work today.
-     * @param actualDay In this parameter you can set the date, it will be the
-     * actual day.
+     * @param year
+     * @param month
+     * @param day
      * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
      * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay(long requiredMinPerDay, LocalDate actualDay) throws NegativeMinutesOfWorkException, FutureWorkException {
+    public WorkDay(long requiredMinPerDay, int year, int month, int day) throws NegativeMinutesOfWorkException, FutureWorkException {
+        LocalDate actualDay = LocalDate.of(year, month, day);
         if (requiredMinPerDay <= 0) {
             throw new NegativeMinutesOfWorkException("You set a negative value for required minutes, you should set a non-negative value!");
         }
@@ -57,19 +59,20 @@ public class WorkDay {
      * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
     public WorkDay(long requiredMinPerDay) throws NegativeMinutesOfWorkException, FutureWorkException {
-        this(requiredMinPerDay, LocalDate.now());
+        this(requiredMinPerDay, LocalDate.now().getYear(),LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth());
     }
 
     /**
      * The default required minutes will be 450 min=7.5 h
      *
-     * @param actualDay In this parameter you can set the date, it will be the
-     * actual day.
+     * @param year, the year value of the date in YYYY format
+     * @param month, the month value of the date with simple integer value
+     * @param day, the day value of the date with simple integer value
      * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
      * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay(LocalDate actualDay) throws NegativeMinutesOfWorkException, FutureWorkException {
-        this(DEFAULT_REQUIRED_MIN_PER_DAY, actualDay);
+    public WorkDay(int year, int month, int day) throws NegativeMinutesOfWorkException, FutureWorkException {
+        this(DEFAULT_REQUIRED_MIN_PER_DAY, year, month, day);
     }
 
     /**
@@ -79,7 +82,7 @@ public class WorkDay {
      * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
     public WorkDay() throws NegativeMinutesOfWorkException, FutureWorkException {
-        this(DEFAULT_REQUIRED_MIN_PER_DAY, LocalDate.now());
+        this(DEFAULT_REQUIRED_MIN_PER_DAY, LocalDate.now().getYear(),LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth());
     }
 
     /**
@@ -97,11 +100,14 @@ public class WorkDay {
 
     /**
      * We can set the date of the actual day.
-     *
-     * @param actualDay the value which will be set
+     * 
+     * @param year, the year value of the date in YYYY format
+     * @param month, the month value of the date with simple integer value
+     * @param day, the day value of the date with simple integer value
      * @throws FutureWorkException, if we try to set a date after today
      */
-    public void setActualDay(LocalDate actualDay) throws FutureWorkException {
+    public void setActualDay(int year, int month, int day) throws FutureWorkException {
+        LocalDate actualDay = LocalDate.of(year, month, day);
         if (actualDay.isAfter(LocalDate.now())) {
             throw new FutureWorkException("You cannot work later than today, you should set an other day!");
         }

@@ -27,19 +27,19 @@ public class TimeLoggerTest {
 
     @Before
     public void setUp() throws InvalidTaskIdException, NoTaskIdException, NegativeMinutesOfWorkException, FutureWorkException {
-        t1 = new Task("4654", "", LocalTime.of(7, 30), LocalTime.of(10, 30));
-        wd1 = new WorkDay(LocalDate.of(2016, 9, 8));
-        wd2 = new WorkDay(LocalDate.of(2016, 9, 7));
-        wd3 = new WorkDay(LocalDate.of(2016, 8, 30));
-        wd4 = new WorkDay(LocalDate.of(2016, 8, 31));
-        wd5 = new WorkDay(LocalDate.of(2016, 4, 14));
-        wd6 = new WorkDay(LocalDate.of(2016, 4, 13));
-        wd7 = new WorkDay(LocalDate.of(2015, 8, 12));
-        wd8 = new WorkDay(LocalDate.of(2015, 8, 13));
-        april = new WorkMonth();
-        august = new WorkMonth();
-        september = new WorkMonth();
-        august15 = new WorkMonth();
+        t1 = new Task("4654", "", 7, 30, 10, 30);
+        wd1 = new WorkDay(2016, 9, 8);
+        wd2 = new WorkDay(2016, 9, 7);
+        wd3 = new WorkDay(2016, 8, 30);
+        wd4 = new WorkDay(2016, 8, 31);
+        wd5 = new WorkDay(2016, 4, 14);
+        wd6 = new WorkDay(2016, 4, 13);
+        wd7 = new WorkDay(2015, 8, 12);
+        wd8 = new WorkDay(2015, 8, 13);
+        april = new WorkMonth(2016,4);
+        august = new WorkMonth(2016,8);
+        september = new WorkMonth(2016,9);
+        august15 = new WorkMonth(2015,8);
         tl1 = new TimeLogger();
     }
 

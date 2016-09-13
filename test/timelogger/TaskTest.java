@@ -14,13 +14,13 @@ public class TaskTest {
 
     @BeforeClass
     public static void setUp() throws NoTaskIdException, InvalidTaskIdException {
-        t1 = new Task("1485", "This is a comment", LocalTime.of(7, 35), LocalTime.of(8, 45));
+        t1 = new Task("1485", "This is a comment", 7, 35, 8, 45);
         
         t3 = new Task();
         t3.setTaskId("LT-1234");
         t3.setStartTime(LocalTime.of(8, 45));
         t3.setComment("");
-        t4 = new Task("LT-1485", "This is a comment", LocalTime.of(7, 30), LocalTime.of(8, 45));
+        t4 = new Task("LT-1485", "This is a comment", 7, 30, 8, 45);
         t5 = new Task();
         t5.setStartTime(LocalTime.of(7, 30));
         t5.setEndTime(LocalTime.of(8, 45));
@@ -28,7 +28,7 @@ public class TaskTest {
 
     @Test(expected = NotExpectedTimeOrderException.class)
     public void testGetMinPerTaskNegativeDuration() throws NotExpectedTimeOrderException, EmptyTimeFieldException, InvalidTaskIdException, NoTaskIdException {
-        Task t2 = new Task("1485", "This is a comment", LocalTime.of(8, 45), LocalTime.of(7, 30));
+        Task t2 = new Task("1485", "This is a comment", 8, 45, 7, 30);
         t2.getMinPerTask();
     }
 
@@ -53,7 +53,7 @@ public class TaskTest {
 
     @Test(expected = InvalidTaskIdException.class)
     public void testIsValidRedmineTaskIdFalse() throws NoTaskIdException, InvalidTaskIdException {
-        Task t2 = new Task("14856", "This is a comment", LocalTime.of(8, 45), LocalTime.of(7, 30));
+        Task t2 = new Task("14856", "This is a comment",8, 45, 7, 30);
         boolean expResult = false;
         boolean result = t2.isValidRedmineTaskId();
         assertEquals(expResult, result);
@@ -73,7 +73,7 @@ public class TaskTest {
 
     @Test(expected = InvalidTaskIdException.class)
     public void testIsValidLTTaskIdFalse() throws NoTaskIdException, InvalidTaskIdException {
-        Task t3 = new Task("LT-132465","",LocalTime.of(10, 30), LocalTime.of(11, 45));
+        Task t3 = new Task("LT-132465","",10, 30, 11, 45);
         boolean expResult = false;
         boolean result = t3.isValidLTTaskId();
         assertEquals(expResult, result);
@@ -86,7 +86,7 @@ public class TaskTest {
 
     @Test(expected = InvalidTaskIdException.class)
     public void testIsValidTaskIDFalse() throws NoTaskIdException, InvalidTaskIdException {
-        Task t3 = new Task("LT-132465","",LocalTime.of(10, 30), LocalTime.of(11, 45));
+        Task t3 = new Task("LT-132465","",10, 30, 11, 45);
         boolean expResult = false;
         boolean result = t3.isValidTaskID();
         assertEquals(expResult, result);
@@ -132,6 +132,6 @@ public class TaskTest {
     
     @Test(expected = InvalidTaskIdException.class)
     public void testTaskInvalidId() throws InvalidTaskIdException, NoTaskIdException{
-    Task t6 = new Task("12345","",LocalTime.of(8, 30),LocalTime.of(10, 30));
+    Task t6 = new Task("12345","",8, 30,10, 30);
     }
 }
