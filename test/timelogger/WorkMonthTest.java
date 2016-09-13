@@ -23,7 +23,7 @@ public class WorkMonthTest {
     WorkMonth wm1;
     
     @Before
-    public void setUp() throws NoTaskIdException {
+    public void setUp() throws NoTaskIdException, InvalidTaskIdException, NegativeMinutesOfWorkException, FutureWorkException {
         wd1 = new WorkDay(420);
         wd2 = new WorkDay();
         wd3 = new WorkDay(420, LocalDate.of(2016, Month.SEPTEMBER, 1));
@@ -35,9 +35,9 @@ public class WorkMonthTest {
         
         wm1 = new WorkMonth();
     }
-
+    
     @Test
-    public void testGetSumPerMonthNormal() throws NotMultipleQuarterHourException, WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException {
+    public void testGetSumPerMonthNormal() throws NotMultipleQuarterHourException, WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException, NotTheSameMonthException {
         wd1.addTask(t1);
         wm1.addWorkDay(wd1);
         wd3.addTask(t2);
@@ -48,14 +48,14 @@ public class WorkMonthTest {
     }
     
     @Test
-    public void testGetSumPerMonthNoDays() throws NotMultipleQuarterHourException, WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException {
+    public void testGetSumPerMonthNoDays() throws NotMultipleQuarterHourException, WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException {
         long expResult = 0;
         long result = wm1.getSumPerMonth();
         assertEquals(expResult, result);
     }
-
+    
     @Test
-    public void testGetExtraMinPerMonthNormal() throws NotMultipleQuarterHourException, WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException {
+    public void testGetExtraMinPerMonthNormal() throws NotMultipleQuarterHourException, WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException, NotTheSameMonthException {
         wd1.addTask(t1);
         wm1.addWorkDay(wd1);
         wd3.addTask(t2);
@@ -66,14 +66,14 @@ public class WorkMonthTest {
     }
     
     @Test
-    public void testGetExtraMinPerMonthNoDays() throws NotMultipleQuarterHourException, WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException {
+    public void testGetExtraMinPerMonthNoDays() throws NotMultipleQuarterHourException, WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException {
         long expResult = 0;
         long result = wm1.getExtraMinPerMonth();
         assertEquals(expResult, result);
     }
     
     @Test
-    public void testGetRequiredMinPerMonthNormal() throws WeekendIsNotEnabledException, NotMultipleQuarterHourException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException {
+    public void testGetRequiredMinPerMonthNormal() throws WeekendNotEnabledException, NotMultipleQuarterHourException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException, NotTheSameMonthException {
         wm1.addWorkDay(wd1);
         wm1.addWorkDay(wd3);
         long expResult = 840;
@@ -82,51 +82,53 @@ public class WorkMonthTest {
     }
     
     @Test
-    public void testGetRequiredMinPerMonthNoDays() throws WeekendIsNotEnabledException, NotMultipleQuarterHourException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException {        
+    public void testGetRequiredMinPerMonthNoDays() throws WeekendNotEnabledException, NotMultipleQuarterHourException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException {        
         long expResult = 0;
         long result = wm1.getRequiredMinPerMonth();
         assertEquals(expResult, result);
     }
-
+    
     @Test
-    public void testAddWorkDayWeekday() throws NotMultipleQuarterHourException, WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException {
+    public void testAddWorkDayWeekday() throws NotMultipleQuarterHourException, WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException, NotTheSameMonthException {
         wd1.addTask(t1);
         wm1.addWorkDay(wd1);
         assertEquals(wd1.getSumPerDay(), wm1.getSumPerMonth());
     }
     
     @Test
-    public void testAddWorkDayWeekendTrue() throws NotMultipleQuarterHourException, WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException {
+    public void testAddWorkDayWeekendTrue() throws NotMultipleQuarterHourException, WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException, NotTheSameMonthException {
         wd5.addTask(t1);
         wm1.addWorkDay(wd5, true);
         assertEquals(wd5.getSumPerDay(), wm1.getSumPerMonth());
     }
     
-    @Test(expected = WeekendIsNotEnabledException.class)
-    public void testAddWorkDayWeekendFalse() throws WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotNewDateException {
+    @Test(expected = WeekendNotEnabledException.class)
+    public void testAddWorkDayWeekendFalse() throws WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotNewDateException, NotTheSameMonthException {
         wm1.addWorkDay(wd5);
     }
     
     @Test(expected = NotNewDateException.class)
-    public void testAddWorkDayNewFalse() throws WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotNewDateException, NotMultipleQuarterHourException, NotSeparatedTaskTimesException {
-        wd3.addTask(t1);
-        wd4.addTask(t2);
+    public void testAddWorkDayNewFalse() throws WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotNewDateException, NotMultipleQuarterHourException, NotSeparatedTaskTimesException, NotTheSameMonthException {
         wm1.addWorkDay(wd4);
         wm1.addWorkDay(wd3);
-        long expResult = 135;
-        long result = wm1.getSumPerMonth();
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void testAddWorkDayNewTrue() throws NotMultipleQuarterHourException, WeekendIsNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException {
-        wm1.addWorkDay(wd4);
-        wm1.addWorkDay(wd1);
-        assertEquals(wd5.getSumPerDay(), wm1.getSumPerMonth());
     }
     
     @Test
-    public void testIsNewDateFalse() throws WeekendIsNotEnabledException, NotNewDateException {
+    public void testAddWorkDayNewTrue() throws NotMultipleQuarterHourException, WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException, NotNewDateException, NotTheSameMonthException {
+        wm1.addWorkDay(wd4);
+        wm1.addWorkDay(wd1);
+        assertEquals(wd1.getRequiredMinPerDay()+wd4.getRequiredMinPerDay(), wm1.getRequiredMinPerMonth());
+    }
+    
+    
+    @Test(expected = NotTheSameMonthException.class)
+    public void testAddWorkDaySameMonthFalse() throws WeekendNotEnabledException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotNewDateException, NotMultipleQuarterHourException, NotSeparatedTaskTimesException, NotTheSameMonthException {
+        wm1.addWorkDay(wd4);
+        wm1.addWorkDay(wd5);
+    }
+    
+    @Test
+    public void testIsNewDateFalse() throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
         boolean expResult = false;
         wm1.addWorkDay(wd3);
         boolean result = wm1.isNewDate(wd4);
@@ -134,10 +136,40 @@ public class WorkMonthTest {
     }
     
     @Test
-    public void testIsNewDateTrue() throws WeekendIsNotEnabledException, NotNewDateException {
+    public void testIsNewDateTrue() throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
         boolean expResult = true;
         wm1.addWorkDay(wd2);
         boolean result = wm1.isNewDate(wd4);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testIsNewDateEmptyDays() {
+        boolean expResult = true;
+        boolean result = wm1.isNewDate(wd1);
+        assertEquals(expResult, result);
+    }    
+    
+    @Test
+    public void testIsSameMonthTrue() throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
+        boolean expResult = true;
+        wm1.addWorkDay(wd1);
+        boolean result = wm1.isSameMonth(wd2);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testIsSameMonthFalse() throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
+        boolean expResult = false;
+        wm1.addWorkDay(wd1);
+        boolean result = wm1.isSameMonth(wd5);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testIsSameMonthEmptyDays() throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
+        boolean expResult = true;
+        boolean result = wm1.isSameMonth(wd5);
         assertEquals(expResult, result);
     }
 }

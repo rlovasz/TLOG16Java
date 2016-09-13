@@ -26,8 +26,10 @@ public class WorkMonth {
      * worked
      *
      * @return with a positive value of worked minutes
-     * @throws timelogger.NotExpectedTimeOrderException
-     * @throws timelogger.EmptyTimeFieldException
+     * @throws timelogger.NotExpectedTimeOrderException, if one of the tasks
+     * begins after it ends
+     * @throws timelogger.EmptyTimeFieldException, if one of the tasks has empty
+     * time field
      */
     public long getSumPerMonth() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
         if (sumPerMonth == 0) {
@@ -72,10 +74,10 @@ public class WorkMonth {
      * the default false value: addWorkDay(WorkDay,false)
      *
      * @param workDay This is a WorkDay parameter, which will be added.
-     * @throws timelogger.WeekendIsNotEnabledException
+     * @throws timelogger.WeekendNotEnabledException
      * @throws timelogger.NotNewDateException
      */
-    public void addWorkDay(WorkDay workDay) throws WeekendIsNotEnabledException, NotNewDateException {
+    public void addWorkDay(WorkDay workDay) throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
         addWorkDay(workDay, false);
     }
 
@@ -87,20 +89,24 @@ public class WorkMonth {
      * @param isWeekendEnabled This is a boolean parameter, if it is false, we
      * cannot work on weekend, but if it is true, we can add a day of weekend to
      * this month.
-     * @throws timelogger.WeekendIsNotEnabledException, if we try to add a
+     * @throws timelogger.WeekendNotEnabledException if we try to add a
      * weekend and it is enabled
-     * @throws timelogger.NotNewDateException, the day is already exists, what
+     * @throws timelogger.NotNewDateException,if the day is already exists, what
      * we are trying to add
+     * @throws timelogger.NotTheSameMonthException, if we try to add a day from 
+     * an other month
      */
-    public void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) throws WeekendIsNotEnabledException, NotNewDateException {
-        if ((workDay.isWeekday() || isWeekendEnabled) && isNewDate(workDay)) {
+    public void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
+        if (isNewDate(workDay) && (isWeekendEnabled || workDay.isWeekday()) && isSameMonth(workDay)) {
             days.add(workDay);
             sumPerMonth = 0;
             requiredMinPerMonth = 0;
         } else if (!isNewDate(workDay)) {
             throw new NotNewDateException("You have already added this day. You should choose an other day!");
+        } else if (!isSameMonth(workDay)) {
+            throw new NotTheSameMonthException("You have changed the month, so you should add this to an other month!");
         } else {
-            throw new WeekendIsNotEnabledException("You cannot add this day, because it is on weekend and it is not enabled.");
+            throw new WeekendNotEnabledException("You cannot add this day, because it is on weekend and it is not enabled.");
         }
     }
 
@@ -113,7 +119,23 @@ public class WorkMonth {
      */
     public boolean isNewDate(WorkDay workDay) {
         for (WorkDay wd : days) {
-            if (wd.getActualDay().equals(workDay.getActualDay())) {
+            if (!days.isEmpty() && wd.getActualDay().equals(workDay.getActualDay())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * This method decides, if the parameter has the same month value, like the
+     * days
+     *
+     * @param workDay parameter about to decide
+     * @return true if it is the same month, false, if it is not
+     */
+    public boolean isSameMonth(WorkDay workDay) {
+        for (WorkDay wd : days) {
+            if ((wd.getActualDay().getMonthValue() != workDay.getActualDay().getMonthValue() || wd.getActualDay().getYear() != workDay.getActualDay().getYear()) && !days.isEmpty()) {
                 return false;
             }
         }

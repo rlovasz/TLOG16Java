@@ -1,34 +1,59 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package timelogger;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
+import java.util.ArrayList;
+import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-/**
- *
- * @author precognox
- */
+@Getter
+@Setter
+@NoArgsConstructor
 public class TimeLogger {
 
+    private List<WorkMonth> months = new ArrayList();
+
     /**
-     * @param args the command line arguments
-     * @throws timelogger.NotMultipleQuarterHourException
-     * @throws timelogger.NotExpectedTimeOrderException
-     * @throws timelogger.EmptyTimeFieldException
-     * @throws timelogger.WeekendIsNotEnabledException
+     * This method adds a new month to the TimeLogger, 
+     * if it is in the same year, as the earlier ones
+     * @param workMonth the month to add
+     * @throws NotSameYearException, if it is not in the same year like the earliers
      */
-    public static void main(String[] args) throws NotMultipleQuarterHourException, NotExpectedTimeOrderException, EmptyTimeFieldException, WeekendIsNotEnabledException, NoTaskIdException, NotSeparatedTaskTimesException, NotNewDateException {
-        WorkDay wd = new WorkDay(LocalDate.of(2016, Month.AUGUST, 28));
-        Task t = new Task("1485", "This is a comment", LocalTime.of(7, 30), LocalTime.of(8, 45));
-        WorkMonth aug = new WorkMonth();
-        wd.addTask(t);
-        aug.addWorkDay(wd);
-        System.out.print(aug.getSumPerMonth());
+    public void addMonth(WorkMonth workMonth) throws NotSameYearException {
+        if(isSameYear(workMonth))
+        months.add(workMonth);
+        else throw new NotSameYearException("You should add new month from the same year.");
     }
 
+    /**
+     * This method calculates the first month of the TimeLogger
+     * @return with the first month
+     * @throws NoMonthsException, if the months list is empty
+     */
+    public WorkMonth Min() throws NoMonthsException {
+        if(!months.isEmpty()){
+        WorkMonth min = months.get(0);
+        for (WorkMonth workMonth : months) {
+            if (min.getDays().get(0).getActualDay().getMonthValue() > workMonth.getDays().get(0).getActualDay().getMonthValue()) {
+                min = workMonth;
+            }
+        }
+        return min;
+        }
+        else throw new NoMonthsException("There are no months yet.");
+    }
+
+    /**
+     * This method decides if the workMonth is in the same year as the months of the TimeLogger
+     * @param workMonth the parameter about to decide
+     * @return with true, if it is in the same year, false, if it is not in the same year
+     */
+    public boolean isSameYear(WorkMonth workMonth) {
+        for (WorkMonth wm : months) {
+            if ((workMonth.getDays().get(0).getActualDay().getYear() != wm.getDays().get(0).getActualDay().getYear()) && !months.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

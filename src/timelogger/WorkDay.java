@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,8 +34,16 @@ public class WorkDay {
      * should work today.
      * @param actualDay In this parameter you can set the date, it will be the
      * actual day.
+     * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
+     * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay(long requiredMinPerDay, LocalDate actualDay) {
+    public WorkDay(long requiredMinPerDay, LocalDate actualDay) throws NegativeMinutesOfWorkException, FutureWorkException {
+        if (requiredMinPerDay <= 0) {
+            throw new NegativeMinutesOfWorkException("You set a negative value for required minutes, you should set a non-negative value!");
+        }
+        if (actualDay.isAfter(LocalDate.now())) {
+            throw new FutureWorkException("You cannot work later than today, you should set an other day!");
+        }
         this.requiredMinPerDay = requiredMinPerDay;
         this.actualDay = actualDay;
     }
@@ -47,8 +53,10 @@ public class WorkDay {
      *
      * @param requiredMinPerDay In this parameter you can set the minutes you
      * should work today.
+     * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
+     * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay(long requiredMinPerDay) {
+    public WorkDay(long requiredMinPerDay) throws NegativeMinutesOfWorkException, FutureWorkException {
         this(requiredMinPerDay, LocalDate.now());
     }
 
@@ -57,16 +65,20 @@ public class WorkDay {
      *
      * @param actualDay In this parameter you can set the date, it will be the
      * actual day.
+     * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
+     * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay(LocalDate actualDay) {
+    public WorkDay(LocalDate actualDay) throws NegativeMinutesOfWorkException, FutureWorkException {
         this(DEFAULT_REQUIRED_MIN_PER_DAY, actualDay);
     }
 
     /**
      * The default actual day will be today (server time), the default required
      * minutes will be 450 min = 7.5 h
+     * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
+     * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay() {
+    public WorkDay() throws NegativeMinutesOfWorkException, FutureWorkException {
         this(DEFAULT_REQUIRED_MIN_PER_DAY, LocalDate.now());
     }
 
@@ -179,15 +191,15 @@ public class WorkDay {
      */
     public boolean isSeparatedTime(Task task) {
         for (Task t : tasks) {
-            if (t.getStartTime().isBefore(task.getStartTime())) {
+            if (t.getStartTime().isBefore(task.getStartTime()) && !tasks.isEmpty()) {
                 if (task.getStartTime().isBefore(t.getEndTime())) {
                     return false;
                 }
-            } else if (t.getStartTime().isAfter(task.getStartTime())) {
+            } else if (t.getStartTime().isAfter(task.getStartTime())&& !tasks.isEmpty()) {
                 if (t.getStartTime().isBefore(task.getEndTime())) {
                     return false;
                 }
-            } else if (t.getEndTime().equals(task.getEndTime())) {
+            } else if (t.getEndTime().equals(task.getEndTime())&& !tasks.isEmpty()) {
                 return false;
             }
         }

@@ -25,7 +25,7 @@ public class WorkDayTest {
     WorkDay wd7;
 
     @Before
-    public void setUp() throws NoTaskIdException {
+    public void setUp() throws NoTaskIdException, InvalidTaskIdException, NegativeMinutesOfWorkException, FutureWorkException {
         wd1 = new WorkDay(420);
         wd2 = new WorkDay();
         wd3 = new WorkDay(420, LocalDate.of(2016, Month.SEPTEMBER, 1));
@@ -76,9 +76,19 @@ public class WorkDayTest {
         wd1.setRequiredMinPerDay(-15);
     }
 
+    @Test(expected = NegativeMinutesOfWorkException.class)
+    public void testWorkDayNegativeRequiredMin() throws NegativeMinutesOfWorkException, FutureWorkException {
+        WorkDay wd = new WorkDay(-100);
+    }
+
     @Test(expected = FutureWorkException.class)
     public void testSetActualDayFuture() throws FutureWorkException {
-        wd1.setActualDay(LocalDate.of(2016, Month.SEPTEMBER, 15));
+        wd1.setActualDay(LocalDate.now().plusDays(1));
+    }
+
+    @Test(expected = FutureWorkException.class)
+    public void testWorkDayFuture() throws NegativeMinutesOfWorkException, FutureWorkException{
+    WorkDay wd = new WorkDay(LocalDate.now().plusDays(1));
     }
 
     @Test

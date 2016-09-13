@@ -17,8 +17,6 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 public class Task {
-
-    @Setter
     private String taskId;
     @Setter
     private LocalTime startTime;
@@ -28,6 +26,45 @@ public class Task {
     private String comment = "";
     private long minPerTask;
 
+    
+    /**
+     * @param taskId This is the Id of the task. Redmine project: 4 digits, LT
+     * project: LT-(4 digits)
+     * @param comment In this parameter you can add some detail about what did
+     * you do exactly.
+     * @param startTime You can set the time when you started the task:
+     * LocalTime.of(hh,mm)
+     * @param endTime You can set the time when you finished the task:
+     * LocalTime.of(hh,mm)
+     * @throws timelogger.InvalidTaskIdException, if the set task Id is not valid
+     * @throws timelogger.NoTaskIdException, if there is no task Id set
+     */
+    public Task(String taskId, String comment, LocalTime startTime, LocalTime endTime) throws InvalidTaskIdException, NoTaskIdException{
+        
+        this.taskId = taskId;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.comment = comment;
+        if(!isValidTaskID())
+        {
+        throw new InvalidTaskIdException("It is not a valid task Id. Valid id's: 4 digits or LT-4 digits");
+        }
+    }
+
+    /**
+     * @param taskId The parameter to set
+     * @throws InvalidTaskIdException, if the set task Id is not valid
+     * @throws NoTaskIdException, if there is no task Id set 
+     */
+    public void setTaskId(String taskId) throws InvalidTaskIdException, NoTaskIdException {
+        this.taskId = taskId;
+        if(!isValidTaskID())
+        {
+        throw new InvalidTaskIdException("It is not a valid task Id. Valid id's: 4 digits or LT-4 digits");
+        }
+    }
+
+    
     /**
      * @return with the value of task Id, if it is set
      * @throws NoTaskIdException , if task Id is not set
@@ -51,25 +88,7 @@ public class Task {
 
         return comment;
     }
-
-    /**
-     * @param taskId This is the Id of the task. Redmine project: 4 digits, LT
-     * project: LT-(4 digits)
-     * @param comment In this parameter you can add some detail about what did
-     * you do exactly.
-     * @param startTime You can set the time when you started the task:
-     * LocalTime.of(hh,mm)
-     * @param endTime You can set the time when you finished the task:
-     * LocalTime.of(hh,mm)
-     */
-    public Task(String taskId, String comment, LocalTime startTime, LocalTime endTime){
-        this.taskId = taskId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.comment = comment;
-
-    }
-
+    
     /**
      * This method is a getter for the minPerTask field.
      *
@@ -124,7 +143,7 @@ public class Task {
      * @return true, if it is valid, false if it isn't valid.
      * @throws timelogger.NoTaskIdException, if task Id is not set
      */
-    public boolean isValidTaskID() throws NoTaskIdException {
+    protected boolean isValidTaskID() throws NoTaskIdException {
 
         return isValidLTTaskId() || isValidRedmineTaskId();
     }
@@ -133,7 +152,7 @@ public class Task {
      * This method checks if the minutes are the multiple of quarter hour
      *
      * @return true, if it is multiple, but false if it isn't.
-     * @throws timelogger.NotExpectedTimeOrderException, , if the task begins after it ends
+     * @throws timelogger.NotExpectedTimeOrderException, if the task begins after it ends
      * @throws timelogger.EmptyTimeFieldException, if any of the LocalTime  parameter is empty
      */
     public boolean isMultipleQuarterHour() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
