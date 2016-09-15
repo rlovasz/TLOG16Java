@@ -202,7 +202,19 @@ public class WorkDay {
     public LocalTime endTimeOfTheLastTask() {
         if (!tasks.isEmpty()) {
             List<LocalTime> endTimes = tasks.stream().map(Task::getEndTime).collect(Collectors.toList());
+            List<LocalTime> startTimes = tasks.stream().map(Task::getStartTime).collect(Collectors.toList());
+            for(int i=0; i<endTimes.size();i++)
+            {
+            if(endTimes.get(i).equals(startTimes.get(i)))
+            {
+            endTimes.remove(i);
+            startTimes.remove(i);
+            i--;
+            }
+            }
+            if(!endTimes.isEmpty())
             return Collections.max(endTimes);
+            else return null;
         }
         return null;
     }

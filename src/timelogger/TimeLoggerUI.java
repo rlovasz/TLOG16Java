@@ -31,17 +31,7 @@ public class TimeLoggerUI {
         WorkDay actualDay;
         do {
             
-            System.out.println("0. Exit");
-            System.out.println("1. List months");
-            System.out.println("2. List days of a specific month");
-            System.out.println("3. List tasks of a specific day");
-            System.out.println("4. Add new month");
-            System.out.println("5. Add day to a specific month");
-            System.out.println("6. Start a task for a specific day");
-            System.out.println("7. Finish a specific task");
-            System.out.println("8. Delete a task");
-            System.out.println("9. Modify a task");
-            System.out.println("10. Ask for statistics");
+            printTheMainMenu();
             input = scanner.nextInt();
             
             switch (input) {
@@ -149,6 +139,20 @@ public class TimeLoggerUI {
                 
             }
         } while (input != 0);
+    }
+
+    private static void printTheMainMenu() {
+        System.out.println("0. Exit");
+        System.out.println("1. List months");
+        System.out.println("2. List days of a specific month");
+        System.out.println("3. List tasks of a specific day");
+        System.out.println("4. Add new month");
+        System.out.println("5. Add day to a specific month");
+        System.out.println("6. Start a task for a specific day");
+        System.out.println("7. Finish a specific task");
+        System.out.println("8. Delete a task");
+        System.out.println("9. Modify a task");
+        System.out.println("10. Ask for statistics");
     }
 
     private static void printDaysStatisticsOfMonth(WorkMonth actualMonth) {

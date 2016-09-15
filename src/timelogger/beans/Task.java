@@ -25,7 +25,6 @@ public class Task {
     private LocalTime endTime;
     @Setter
     private String comment = "";
-    private long minPerTask;
 
     /**
      * @param taskId This is the Id of the task. Redmine project: 4 digits, LT
