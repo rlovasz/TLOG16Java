@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-class NegativeMinutesOfWorkException extends Exception {
+public class NegativeMinutesOfWorkException extends RuntimeException {
 
     public NegativeMinutesOfWorkException() {
     }

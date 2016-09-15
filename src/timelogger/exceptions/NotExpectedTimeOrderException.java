@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-class NotExpectedTimeOrderException extends Exception {
+public class NotExpectedTimeOrderException extends RuntimeException {
 
     public NotExpectedTimeOrderException() {
     }

@@ -1,9 +1,11 @@
-package timelogger;
+package timelogger.beans;
 
+import timelogger.exceptions.NotNewDateException;
+import timelogger.exceptions.NotTheSameMonthException;
+import timelogger.exceptions.WeekendNotEnabledException;
 import java.time.YearMonth;
 import java.util.*;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * With the instantiation of this class we can create work months. We can ask
@@ -12,9 +14,8 @@ import lombok.Setter;
  *
  * @author precognox
  */
-public class WorkMonth {
+public class WorkMonth implements Comparable<WorkMonth>{
 
-    @Setter
     @Getter
     private List<WorkDay> days = new ArrayList<>();
     @Getter
@@ -32,20 +33,13 @@ public class WorkMonth {
     }
     
     /**
-     * This method calculates all the minutes in this date while the employee
- worked
+     * This method calculates all the minutes in this date while the employee worked
      *
      * @return with a positive value of worked minutes
-     * @throws timelogger.NotExpectedTimeOrderException, if one of the tasks
-     * begins after it ends
-     * @throws timelogger.EmptyTimeFieldException, if one of the tasks has empty
-     * time field
      */
-    public long getSumPerMonth() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+    public long getSumPerMonth(){
         if (sumPerMonth == 0) {
-            for (WorkDay workDay : days) {
-                sumPerMonth += workDay.getSumPerDay();
-            }
+          return days.stream().mapToLong(WorkDay::getSumPerDay).sum();
         }
         return sumPerMonth;
     }
@@ -56,10 +50,8 @@ public class WorkMonth {
      * @return with the signed value of extra minutes. If it is positive the
      * employee worked more, if it is negative the employee worked less, then
      * the required.
-     * @throws timelogger.NotExpectedTimeOrderException
-     * @throws timelogger.EmptyTimeFieldException
      */
-    public long getExtraMinPerMonth() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+    public long getExtraMinPerMonth(){
         if (requiredMinPerMonth == 0) {
             requiredMinPerMonth = getRequiredMinPerMonth();
         }
@@ -67,8 +59,7 @@ public class WorkMonth {
     }
 
     /**
-     * This method calculates how many minutes should the employee work this
- date.
+     * This method calculates how many minutes should the employee work this date.
      *
      * @return with the integer value of minutes.
      */
@@ -84,10 +75,8 @@ public class WorkMonth {
      * the default false value: addWorkDay(WorkDay,false)
      *
      * @param workDay This is a WorkDay parameter, which will be added.
-     * @throws timelogger.WeekendNotEnabledException
-     * @throws timelogger.NotNewDateException
      */
-    public void addWorkDay(WorkDay workDay) throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
+    public void addWorkDay(WorkDay workDay) {
         addWorkDay(workDay, false);
     }
 
@@ -97,16 +86,10 @@ public class WorkMonth {
      *
      * @param workDay This is a WorkDay parameter, which will be added.
      * @param isWeekendEnabled This is a boolean parameter, if it is false, we
- cannot work on weekend, but if it is true, we can add a day of weekend to
- this date.
-     * @throws timelogger.WeekendNotEnabledException if we try to add a
-     * weekend and it is enabled
-     * @throws timelogger.NotNewDateException,if the day is already exists, what
-     * we are trying to add
-     * @throws timelogger.NotTheSameMonthException, if we try to add a day from 
- an other date
+     * cannot work on weekend, but if it is true, we can add a day of weekend to
+     * this date.
      */
-    public void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException {
+    public void addWorkDay(WorkDay workDay, boolean isWeekendEnabled) {
         if (isNewDate(workDay) && (isWeekendEnabled || workDay.isWeekday()) && isSameMonth(workDay)) {
             days.add(workDay);
             sumPerMonth = 0;
@@ -137,19 +120,41 @@ public class WorkMonth {
     }
 
     /**
-     * This method decides, if the parameter has the same date value, like the
- days
+     * This method decides, if the parameter has the same date value, like the days
      *
      * @param workDay parameter about to decide
      * @return true if it is the same date, false, if it is not
      */
     public boolean isSameMonth(WorkDay workDay) {
-        for (WorkDay wd : days) {
-            if ((wd.getActualDay().getMonthValue() != workDay.getActualDay().getMonthValue() || wd.getActualDay().getYear() != workDay.getActualDay().getYear()) && !days.isEmpty()) {
+        
+            if ((hasDifferentMonthValue(workDay) || hasDifferentYearValue(workDay)) ) {
                 return false;
             }
-        }
+        
         return true;
+    }
+
+    /**
+     * Decides if the WorkDay parameter is in a different year as this month
+     * @param workDay
+     * @return true, if they are in the same year, false, if they are not
+     */
+    public boolean hasDifferentYearValue(WorkDay workDay) {
+        return workDay.getActualDay().getYear() != date.getYear();
+    }
+
+    /**
+     * Decides if the WorkDay parameter is in a different month
+     * @param workDay
+     * @return true, if it is in this month, false, if it is not
+     */
+    public boolean hasDifferentMonthValue(WorkDay workDay) {
+        return workDay.getActualDay().getMonthValue() != date.getMonthValue();
+    }
+
+    @Override
+    public int compareTo(WorkMonth otherMonth) {
+        return this.date.compareTo(otherMonth.date);
     }
 
 }

@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-class NoTaskIdException extends Exception {
+public class NoTaskIdException extends RuntimeException {
 
     public NoTaskIdException() {
     }

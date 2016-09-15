@@ -1,20 +1,17 @@
-package timelogger;
+package timelogger.beans;
 
-import java.time.LocalTime;
+import timelogger.exceptions.NotNewMonthException;
+import timelogger.exceptions.NoMonthsException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NoArgsConstructor
 public class TimeLogger {
 
     @Getter
-    @Setter
     private List<WorkMonth> months = new ArrayList();
 
     /**
@@ -22,10 +19,8 @@ public class TimeLogger {
      * year, as the earlier ones
      *
      * @param workMonth the month to add
-     * @throws timelogger.NotNewMonthException, if the workMonth is already
-     * exists
      */
-    public void addMonth(WorkMonth workMonth) throws NotNewMonthException {
+    public void addMonth(WorkMonth workMonth) {
         if (isNewMonth(workMonth)) {
             months.add(workMonth);
         } else {
@@ -33,7 +28,6 @@ public class TimeLogger {
         }
 
     }
-    
 
     /**
      * This method decides if the work month is in the list of the months
@@ -55,23 +49,13 @@ public class TimeLogger {
      * This method calculates the first month of the TimeLogger
      *
      * @return with the first month
-     * @throws NoMonthsException, if the months list is empty
      */
-    public WorkMonth Min() throws NoMonthsException {
+    public WorkMonth getFirstMonthOfTimeLogger(){
         if (!months.isEmpty()) {
-            WorkMonth min = months.get(0);
-            for (WorkMonth workMonth : months) {
-                if (min.getDate().getYear() > workMonth.getDate().getYear()
-                        || (min.getDate().getYear() == workMonth.getDate().getYear()
-                        && min.getDate().getMonthValue() > workMonth.getDate().getMonthValue())) {
-                    min = workMonth;
-                }
-            }
-            return min;
-        } else {
-            throw new NoMonthsException("There are no months yet.");
+            return Collections.min(months);
         }
+
+        throw new NoMonthsException("There are no months yet.");
     }
 
-    
 }

@@ -1,12 +1,18 @@
-package timelogger;
+package timelogger.beans;
 
+import timelogger.exceptions.NegativeMinutesOfWorkException;
+import timelogger.exceptions.FutureWorkException;
+import timelogger.exceptions.NotMultipleQuarterHourException;
+import timelogger.exceptions.NotSeparatedTaskTimesException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * With the instantiation of this class we can create work days. We can set the
@@ -20,13 +26,17 @@ import lombok.Setter;
 @Getter
 public class WorkDay {
 
-    private static final List<DayOfWeek> WEEKDAYS = new ArrayList<>(Arrays.asList(DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY));
-    private static final int DEFAULT_REQUIRED_MIN_PER_DAY = 450;
-    @Setter
+    private static final List<DayOfWeek> WEEKDAYS = Arrays.asList(
+            DayOfWeek.MONDAY,
+            DayOfWeek.TUESDAY,
+            DayOfWeek.WEDNESDAY,
+            DayOfWeek.THURSDAY,
+            DayOfWeek.FRIDAY
+    );
+    private static final int DEFAULT_REQUIRED_MIN_PER_DAY = (int) (7.5 * 60);
     private List<Task> tasks = new ArrayList<>();
     private long requiredMinPerDay;
     private LocalDate actualDay;
-    private long extraMinPerDay;
     private long sumPerDay = 0;
 
     /**
@@ -35,10 +45,8 @@ public class WorkDay {
      * @param year
      * @param month
      * @param day
-     * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
-     * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay(long requiredMinPerDay, int year, int month, int day) throws NegativeMinutesOfWorkException, FutureWorkException {
+    public WorkDay(long requiredMinPerDay, int year, int month, int day) {
         LocalDate actualDay = LocalDate.of(year, month, day);
         if (requiredMinPerDay <= 0) {
             throw new NegativeMinutesOfWorkException("You set a negative value for required minutes, you should set a non-negative value!");
@@ -55,11 +63,9 @@ public class WorkDay {
      *
      * @param requiredMinPerDay In this parameter you can set the minutes you
      * should work today.
-     * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
-     * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay(long requiredMinPerDay) throws NegativeMinutesOfWorkException, FutureWorkException {
-        this(requiredMinPerDay, LocalDate.now().getYear(),LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth());
+    public WorkDay(long requiredMinPerDay) {
+        this(requiredMinPerDay, LocalDate.now().getYear(), LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth());
     }
 
     /**
@@ -68,30 +74,25 @@ public class WorkDay {
      * @param year, the year value of the date in YYYY format
      * @param month, the month value of the date with simple integer value
      * @param day, the day value of the date with simple integer value
-     * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
-     * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay(int year, int month, int day) throws NegativeMinutesOfWorkException, FutureWorkException {
+    public WorkDay(int year, int month, int day) {
         this(DEFAULT_REQUIRED_MIN_PER_DAY, year, month, day);
     }
 
     /**
      * The default actual day will be today (server time), the default required
      * minutes will be 450 min = 7.5 h
-     * @throws timelogger.NegativeMinutesOfWorkException, if requiredMinPerDay has a negative value
-     * @throws timelogger.FutureWorkException, if actualDay is later than today
      */
-    public WorkDay() throws NegativeMinutesOfWorkException, FutureWorkException {
-        this(DEFAULT_REQUIRED_MIN_PER_DAY, LocalDate.now().getYear(),LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth());
+    public WorkDay() {
+        this(DEFAULT_REQUIRED_MIN_PER_DAY, LocalDate.now().getYear(), LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth());
     }
 
     /**
      * We can set the amount of the minutes the employee should work this day.
      *
      * @param requiredMinPerDay the value which will be set
-     * @throws NegativeMinutesOfWorkException, if we try to set a negative value
      */
-    public void setRequiredMinPerDay(long requiredMinPerDay) throws NegativeMinutesOfWorkException {
+    public void setRequiredMinPerDay(long requiredMinPerDay) {
         if (requiredMinPerDay <= 0) {
             throw new NegativeMinutesOfWorkException("You set a negative value for required minutes, you should set a non-negative value!");
         }
@@ -100,13 +101,12 @@ public class WorkDay {
 
     /**
      * We can set the date of the actual day.
-     * 
+     *
      * @param year, the year value of the date in YYYY format
      * @param month, the month value of the date with simple integer value
      * @param day, the day value of the date with simple integer value
-     * @throws FutureWorkException, if we try to set a date after today
      */
-    public void setActualDay(int year, int month, int day) throws FutureWorkException {
+    public void setActualDay(int year, int month, int day) {
         LocalDate actualDay = LocalDate.of(year, month, day);
         if (actualDay.isAfter(LocalDate.now())) {
             throw new FutureWorkException("You cannot work later than today, you should set an other day!");
@@ -121,12 +121,8 @@ public class WorkDay {
      * @return with the signed value of the extra minutes on this work day. If
      * it is positive the employee worked more, if it is negative the employee
      * worked less, then the required.
-     * @throws timelogger.NotExpectedTimeOrderException, if a task of this day
-     * begins later then it ends
-     * @throws timelogger.EmptyTimeFieldException, if a task of this day has
-     * empty time field
      */
-    public long getExtraMinPerDay() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+    public long getExtraMinPerDay() {
         return getSumPerDay() - requiredMinPerDay;
     }
 
@@ -135,17 +131,12 @@ public class WorkDay {
      * day.
      *
      * @return with the minutes while the employee worked on this work day
-     * @throws timelogger.NotExpectedTimeOrderException, if a task of this day
-     * begins later then it ends
-     * @throws timelogger.EmptyTimeFieldException, if a task of this day has
-     * empty time field
      */
-    public long getSumPerDay() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+    public long getSumPerDay() {
         if (sumPerDay == 0) {
-            for (Task task : tasks) {
-                sumPerDay += task.getMinPerTask();
-            }
+            sumPerDay = tasks.stream().mapToLong(Task::getMinPerTask).sum();
         }
+
         return sumPerDay;
     }
 
@@ -155,18 +146,8 @@ public class WorkDay {
      * be false, this method throws
      *
      * @param task It is a Task type parameter, which will be added
-     * @throws timelogger.NotMultipleQuarterHourException, if the task, which we
-     * are trying to add has a time interval which is not the multiple of the
-     * quarter hour
-     * @throws timelogger.NotExpectedTimeOrderException, if a task of this day
-     * begins later then it ends
-     * @throws timelogger.EmptyTimeFieldException, if a task of this day has
-     * empty time field
-     * @throws timelogger.NotSeparatedTaskTimesException, if the task, which we
-     * are trying to add has a common time interval with one of the existing
-     * task
      */
-    public void addTask(Task task) throws NotMultipleQuarterHourException, NotExpectedTimeOrderException, EmptyTimeFieldException, NotSeparatedTaskTimesException {
+    public void addTask(Task task) {
         if (task.isMultipleQuarterHour() && isSeparatedTime(task)) {
             tasks.add(task);
             sumPerDay = 0;
@@ -201,15 +182,29 @@ public class WorkDay {
                 if (task.getStartTime().isBefore(t.getEndTime())) {
                     return false;
                 }
-            } else if (t.getStartTime().isAfter(task.getStartTime())&& !tasks.isEmpty()) {
+            } else if (t.getStartTime().isAfter(task.getStartTime()) && !tasks.isEmpty()) {
                 if (t.getStartTime().isBefore(task.getEndTime())) {
                     return false;
                 }
-            } else if (t.getEndTime().equals(task.getEndTime())&& !tasks.isEmpty()) {
+            } else if (t.getEndTime().equals(task.getEndTime()) && !tasks.isEmpty()) {
                 return false;
             }
         }
         return true;
+    }
+
+    /**
+     * This method finds the latest endTime
+     *
+     * @return with the latest endTime, if exists, but if there are no tasks, it
+     * returns with null
+     */
+    public LocalTime endTimeOfTheLastTask() {
+        if (!tasks.isEmpty()) {
+            List<LocalTime> endTimes = tasks.stream().map(Task::getEndTime).collect(Collectors.toList());
+            return Collections.max(endTimes);
+        }
+        return null;
     }
 
 }

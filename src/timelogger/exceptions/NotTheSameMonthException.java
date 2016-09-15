@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-class NotTheSameMonthException extends Exception {
+public class NotTheSameMonthException extends RuntimeException {
 
     public NotTheSameMonthException() {
     }

@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-public class NoMonthsException extends Exception {
+public class NoMonthsException extends RuntimeException {
 
     public NoMonthsException() {
     }

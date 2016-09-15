@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-class NotSeparatedTaskTimesException extends Exception {
+public class NotSeparatedTaskTimesException extends RuntimeException {
 
     public NotSeparatedTaskTimesException() {
     }

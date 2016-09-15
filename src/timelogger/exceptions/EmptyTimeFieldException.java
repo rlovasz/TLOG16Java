@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-class EmptyTimeFieldException extends Exception {
+public class EmptyTimeFieldException extends RuntimeException {
 
     public EmptyTimeFieldException() {
     } 

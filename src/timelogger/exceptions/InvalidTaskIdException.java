@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-class InvalidTaskIdException extends Exception {
+public class InvalidTaskIdException extends RuntimeException {
 
     public InvalidTaskIdException() {
     }

@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-public class NotMultipleQuarterHourException extends Exception {
+public class NotMultipleQuarterHourException extends RuntimeException {
 
     
     public NotMultipleQuarterHourException() {

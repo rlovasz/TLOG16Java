@@ -1,6 +1,6 @@
-package timelogger;
+package timelogger.exceptions;
 
-class WeekendNotEnabledException extends Exception {
+public class WeekendNotEnabledException extends RuntimeException {
 
     public WeekendNotEnabledException() {
     }
