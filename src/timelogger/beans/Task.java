@@ -50,7 +50,7 @@ public class Task {
     }
 
     /**
-     * 
+     *
      * @param taskId This is the Id of the task. Redmine project: 4 digits, LT
      * project: LT-(4 digits)
      */
@@ -126,19 +126,18 @@ public class Task {
      * @return
      */
     public static LocalTime stringToLocalTime(String time) {
-        if(time != null)
-        {
-        String hourString = time.substring(0, 2);
-        String minString = time.substring(3);
-        if (hourString.charAt(0) == '0') {
-            hourString = hourString.substring(1);
-        }
-        if (minString.charAt(0) == '0') {
-            minString = minString.substring(1);
-        }
-        int hour = Integer.parseUnsignedInt(hourString);
-        int min = Integer.parseUnsignedInt(minString);
-        return LocalTime.of(hour, min);
+        if (time != null) {
+            String hourString = time.substring(0, 2);
+            String minString = time.substring(3);
+            if (hourString.charAt(0) == '0') {
+                hourString = hourString.substring(1);
+            }
+            if (minString.charAt(0) == '0') {
+                minString = minString.substring(1);
+            }
+            int hour = Integer.parseUnsignedInt(hourString);
+            int min = Integer.parseUnsignedInt(minString);
+            return LocalTime.of(hour, min);
         }
         throw new EmptyTimeFieldException("You leaved out a time argument, you should set it.");
     }
@@ -187,12 +186,10 @@ public class Task {
      *
      * @return true, if it is valid, false if it isn't valid.
      */
-    public boolean isValidRedmineTaskId(){
-        if (taskId == null) {
-            throw new NoTaskIdException("There is no task Id, please set a valid Id!");
-        } else {
-            return taskId.matches("\\d{4}");
-        }
+    public boolean isValidRedmineTaskId() {
+
+        return taskId.matches("\\d{4}");
+
     }
 
     /**
@@ -201,11 +198,9 @@ public class Task {
      * @return true, if it is valid, false if it isn't valid.
      */
     public boolean isValidLTTaskId() {
-        if (taskId == null) {
-            throw new NoTaskIdException("There is no task Id, please set a valid Id!");
-        } else {
+       
             return taskId.matches("LT-\\d{4}");
-        }
+        
     }
 
     /**
@@ -214,9 +209,13 @@ public class Task {
      *
      * @return true, if it is valid, false if it isn't valid.
      */
-    public boolean isValidTaskID(){
+    public boolean isValidTaskID() {
 
-        return isValidLTTaskId() || isValidRedmineTaskId();
+        if (taskId == null) {
+            throw new NoTaskIdException("There is no task Id, please set a valid Id!");
+        } else {
+            return isValidLTTaskId() || isValidRedmineTaskId();
+        }
     }
 
     /**
@@ -224,15 +223,14 @@ public class Task {
      *
      * @return true, if it is multiple, but false if it isn't.
      */
-    public boolean isMultipleQuarterHour(){
+    public boolean isMultipleQuarterHour() {
         return getMinPerTask() % 15 == 0;
 
     }
 
     @Override
     public String toString() {
-        return  "Task Id: " + taskId + ", Start time: " + startTime + ", End Time: " + endTime + ", Comment: " + comment;
+        return "Task Id: " + taskId + ", Start time: " + startTime + ", End Time: " + endTime + ", Comment: " + comment;
     }
 
-    
 }

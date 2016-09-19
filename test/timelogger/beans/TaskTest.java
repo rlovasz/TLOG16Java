@@ -66,85 +66,85 @@ public class TaskTest {
     }
     
     @Test
-    public void testGetMinPerTaskNormal() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+    public void testGetMinPerTaskNormal() {
         long expResult = 75;
         long result = getValidLTTask().getMinPerTask();
         assertEquals(expResult, result);
     }
     
     @Test
-    public void testIsValidRedmineTaskIdTrue() throws NoTaskIdException {
+    public void testIsValidRedmineTaskIdTrue(){
         boolean expResult = true;
         boolean result = getValidRedmineTask().isValidRedmineTaskId();
         assertEquals(expResult, result);
     }
     
     @Test(expected = InvalidTaskIdException.class)
-    public void testIsValidRedmineTaskIdFalse() throws NoTaskIdException, InvalidTaskIdException {
+    public void testIsValidRedmineTaskIdFalse(){
         boolean expResult = false;
         boolean result = getInvalidRedmineTask().isValidRedmineTaskId();
         assertEquals(expResult, result);
     }
     
     @Test(expected = NoTaskIdException.class)
-    public void testIsValidRedmineTaskIdNoId() throws NoTaskIdException {
+    public void testIsValidRedmineTaskIdNoId() {
         getTaskWithMissingId().isValidRedmineTaskId();
     }
     
     @Test
-    public void testIsValidLTTaskIdTrue() throws NoTaskIdException {
+    public void testIsValidLTTaskIdTrue() {
         boolean expResult = true;
         boolean result = getValidLTTask().isValidLTTaskId();
         assertEquals(expResult, result);
     }
     
     @Test(expected = InvalidTaskIdException.class)
-    public void testIsValidLTTaskIdFalse() throws NoTaskIdException, InvalidTaskIdException {
+    public void testIsValidLTTaskIdFalse() {
         boolean expResult = false;
         boolean result = getInvalidLTTask().isValidLTTaskId();
         assertEquals(expResult, result);
     }
     
     @Test(expected = NoTaskIdException.class)
-    public void testIsValidLTTaskIdNoId() throws NoTaskIdException {
+    public void testIsValidLTTaskIdNoId() {
         getTaskWithMissingId().isValidLTTaskId();
     }
     
     @Test(expected = InvalidTaskIdException.class)
-    public void testIsValidTaskIDFalse() throws NoTaskIdException, InvalidTaskIdException {
+    public void testIsValidTaskIDFalse(){
         boolean expResult = false;
         boolean result = getInvalidLTTask().isValidTaskID();
         assertEquals(expResult, result);
     }
     
     @Test
-    public void testIsValidTaskIDTrue() throws NoTaskIdException {
+    public void testIsValidTaskIDTrue() {
         boolean expResult = true;
         boolean result = getValidRedmineTask().isValidTaskID();
         assertEquals(expResult, result);
     }
     
     @Test(expected = NoTaskIdException.class)
-    public void testIsValidTaskIdNoId() throws NoTaskIdException {
+    public void testIsValidTaskIdNoId() {
         getTaskWithMissingId().isValidTaskID();
     }
     
     @Test
-    public void testIsMultipleQuarterHourTrue() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+    public void testIsMultipleQuarterHourTrue() {
         boolean expResult = true;
         boolean result = getValidLTTask().isMultipleQuarterHour();
         assertEquals(expResult, result);
     }
     
     @Test
-    public void testIsMultipleQuarterHourFalse() throws NotExpectedTimeOrderException, EmptyTimeFieldException {
+    public void testIsMultipleQuarterHourFalse() {
         boolean expResult = false;
         boolean result = getNotQuarterHourTask().isMultipleQuarterHour();
         assertEquals(expResult, result);
     }
     
     @Test(expected = NoTaskIdException.class)
-    public void testGetTaskIdNoId() throws NoTaskIdException {
+    public void testGetTaskIdNoId() {
         getTaskWithMissingId().getTaskId();
     }
     
@@ -156,12 +156,12 @@ public class TaskTest {
     }
     
     @Test(expected = InvalidTaskIdException.class)
-    public void testTaskInvalidId() throws InvalidTaskIdException, NoTaskIdException {
+    public void testTaskInvalidId(){
         getInvalidRedmineTask();
     }
     
     @Test(expected = NoTaskIdException.class)
-    public void testTaskNoId() throws InvalidTaskIdException, NoTaskIdException {
+    public void testTaskNoId() {
         getTaskWithMissingId();
     }
     

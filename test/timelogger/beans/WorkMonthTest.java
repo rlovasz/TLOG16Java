@@ -103,33 +103,25 @@ public class WorkMonthTest {
         workMonth.addWorkDay(workDay);
     }
     
-    @Test(expected = NotNewDateException.class)
-    public void testAddWorkDayNewFalse() {
-        WorkDay workDay1 = new WorkDay(2016, 9, 1);
-        WorkDay workDay2 = new WorkDay(400, 2016, 9, 1);
+    @Test
+    public void testIsSameMonthTrue() {
+        WorkDay workDay = new WorkDay(400, 2016, 9, 2);
         WorkMonth workMonth = new WorkMonth(2016, 9);
-        workMonth.addWorkDay(workDay1);
-        workMonth.addWorkDay(workDay2);
+        boolean expResult = true;
+        boolean result = workMonth.isSameMonth(workDay);
+        assertEquals(expResult, result);
     }
     
     @Test
-    public void testAddWorkDayNewTrue() {
-        WorkDay workDay1 = new WorkDay(2016, 9, 1);
-        WorkDay workDay2 = new WorkDay(400, 2016, 9, 2);
+    public void testIsSameMonthFalse() {
+        WorkDay workDay = new WorkDay(400, 2016, 8, 30);
         WorkMonth workMonth = new WorkMonth(2016, 9);
-        workMonth.addWorkDay(workDay1);
-        workMonth.addWorkDay(workDay2);
-        assertEquals(workDay1.getRequiredMinPerDay() + workDay2.getRequiredMinPerDay(), workMonth.getRequiredMinPerMonth());
+        boolean expResult = false;
+        boolean result = workMonth.isSameMonth(workDay);
+        assertEquals(expResult, result);
     }
     
-    @Test(expected = NotTheSameMonthException.class)
-    public void testAddWorkDaySameMonthFalse() {
-        WorkDay workDay = new WorkDay(2016, 8, 30);
-        WorkMonth workMonth = new WorkMonth(2016, 9);
-        workMonth.addWorkDay(workDay);
-    }
-    
-    @Test
+     @Test
     public void testIsNewDateFalse() {
         WorkDay workDay1 = new WorkDay(2016, 9, 1);
         WorkDay workDay2 = new WorkDay(400, 2016, 9, 1);
@@ -160,41 +152,35 @@ public class WorkMonthTest {
         assertEquals(expResult, result);
     }    
     
-    @Test
-    public void testIsSameMonthTrue() {
-        WorkDay workDay = new WorkDay(400, 2016, 9, 2);
+    @Test(expected = NotNewDateException.class)
+    public void testAddWorkDayNewFalse() {
+        WorkDay workDay1 = new WorkDay(2016, 9, 1);
+        WorkDay workDay2 = new WorkDay(400, 2016, 9, 1);
         WorkMonth workMonth = new WorkMonth(2016, 9);
-        boolean expResult = true;
-        boolean result = workMonth.isSameMonth(workDay);
-        assertEquals(expResult, result);
+        workMonth.addWorkDay(workDay1);
+        workMonth.addWorkDay(workDay2);
     }
     
     @Test
-    public void testIsSameMonthFalse() {
-        WorkDay workDay = new WorkDay(400, 2016, 8, 30);
+    public void testAddWorkDayNewTrue() {
+        WorkDay workDay1 = new WorkDay(2016, 9, 1);
+        WorkDay workDay2 = new WorkDay(400, 2016, 9, 2);
         WorkMonth workMonth = new WorkMonth(2016, 9);
-        boolean expResult = false;
-        boolean result = workMonth.isSameMonth(workDay);
-        assertEquals(expResult, result);
+        workMonth.addWorkDay(workDay1);
+        workMonth.addWorkDay(workDay2);
+        assertEquals(workDay1.getRequiredMinPerDay() + workDay2.getRequiredMinPerDay(), workMonth.getRequiredMinPerMonth());
     }
     
-    @Test
-    public void testIsSameMonthEmptyDaysTrue() {
-        WorkDay workDay = new WorkDay(400, 2016, 9, 2);
+    @Test(expected = NotTheSameMonthException.class)
+    public void testAddWorkDaySameMonthFalse() {
+        WorkDay workDay = new WorkDay(2016, 8, 30);
         WorkMonth workMonth = new WorkMonth(2016, 9);
-        boolean expResult = true;
-        boolean result = workMonth.isSameMonth(workDay);
-        assertEquals(expResult, result);
+        workMonth.addWorkDay(workDay);
     }
     
-    @Test
-    public void testIsSameMonthEmptyDaysFalse() {
-        WorkDay workDay = new WorkDay(400, 2016, 8, 30);
-        WorkMonth workMonth = new WorkMonth(2016, 9);
-        boolean expResult = false;
-        boolean result = workMonth.isSameMonth(workDay);
-        assertEquals(expResult, result);
-    }
+   
+    
+    
     
     @Test
     public void getHasDifferentYearValueTrue() {
@@ -229,6 +215,24 @@ public class WorkMonthTest {
         WorkDay workDay = new WorkDay(400, 2016, 9, 1);
         boolean expResult = false;
         boolean result = workMonth.hasDifferentMonthValue(workDay);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testIsSameMonthEmptyDaysTrue() {
+        WorkDay workDay = new WorkDay(400, 2016, 9, 2);
+        WorkMonth workMonth = new WorkMonth(2016, 9);
+        boolean expResult = true;
+        boolean result = workMonth.isSameMonth(workDay);
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testIsSameMonthEmptyDaysFalse() {
+        WorkDay workDay = new WorkDay(400, 2016, 8, 30);
+        WorkMonth workMonth = new WorkMonth(2016, 9);
+        boolean expResult = false;
+        boolean result = workMonth.isSameMonth(workDay);
         assertEquals(expResult, result);
     }
 }

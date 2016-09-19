@@ -65,7 +65,7 @@ public class TimeLoggerTest {
     }
     
     @Test
-    public void testGetFirstMonthOfTimeLoggerNormal() throws WeekendNotEnabledException, NotNewDateException, NotTheSameMonthException, NoMonthsException, NotNewMonthException {
+    public void testGetFirstMonthOfTimeLoggerNormal() {
         TimeLogger timeLogger = getTimeLogger();
         WorkMonth workMonth1 = new WorkMonth(2016, 4);
         WorkMonth workMonth2 = new WorkMonth(2016, 8);
@@ -77,7 +77,7 @@ public class TimeLoggerTest {
     }
 
     @Test(expected = NoMonthsException.class)
-    public void testGetFirstMonthOfTimeLoggerNoMonths() throws NoMonthsException {
+    public void testGetFirstMonthOfTimeLoggerNoMonths() {
         TimeLogger timeLogger = getTimeLogger();
         timeLogger.getFirstMonthOfTimeLogger();
 
